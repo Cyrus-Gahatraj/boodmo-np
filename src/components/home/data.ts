@@ -13,12 +13,11 @@ export interface FeaturedProduct {
 }
 
 export const categories: Category[] = [
-  { id: 1, name: "Engine Parts", icon: "⚙️", count: 1250 },
+  { id: 1, name: "Maintainance service", icon: "⚙️", count: 1250 },
   { id: 2, name: "Brake System", icon: "🛑", count: 890 },
   { id: 3, name: "Electrical", icon: "🔋", count: 720 },
   { id: 4, name: "Body Parts", icon: "🚗", count: 1100 },
   { id: 5, name: "Interior", icon: "🪑", count: 450 },
-  { id: 6, name: "Tires & Wheels", icon: "🛞", count: 680 },
 ];
 
 export const featuredProducts: FeaturedProduct[] = [
