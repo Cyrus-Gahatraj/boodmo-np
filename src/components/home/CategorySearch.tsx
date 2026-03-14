@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import Link from "next/link";
+import { slugify } from "@/lib/slug";
 
 const ASSET_BASE = "https://demoapi.boodmo.in";
 const API_BASE_URL = "/api/boodmo";
@@ -64,8 +66,9 @@ export function CategorySearch() {
 
 			<div className="grid gap-4 md:grid-cols-0 lg:grid-cols-5">
 			{category.slice(0, categoryLen).map((cat) => (
-				<button
+				<Link
 				key={cat.id}
+				href={`/category/${slugify(cat.name)}`}
 				className="flex h-55 w-40 flex-col items-center justify-center gap-3 
 				rounded border border-[#e2edf7] bg-white text-center shadow-sm transition hover:-translate-y-[1px] hover:shadow-md"
 				>
@@ -81,7 +84,7 @@ export function CategorySearch() {
 				<span className="line-clamp-2 px-2 text-[10px] font-bold uppercase tracking-tight text-[#394b63]">
 					{cat.name}
 				</span>
-				</button>
+				</Link>
 			))}
 			</div>
 		) : (
