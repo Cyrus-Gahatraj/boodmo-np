@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const API_BASE_URL = "/api/boodmo";
 
@@ -13,47 +13,41 @@ export function BrandList() {
 	const [brandsLoading, setBrandsLoading] = useState(false);
 	const [brandsError, setBrandsError] = useState("");
 
-	const fetchBrands = async () => {
-		setBrandsLoading(true);
-		setBrandsError("");
+	useEffect(() => {
+		const fetchBrands = async () => {
+			setBrandsLoading(true);
+			setBrandsError("");
 
-		try {
-			const response = await fetch(`${API_BASE_URL}?action=brands`, {
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
+			try {
+				const response = await fetch(`${API_BASE_URL}?action=brands`, {
+					headers: {
+						"Content-Type": "application/json",
+					},
+				});
 
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
+				if (!response.ok) {
+					throw new Error(`HTTP error! status: ${response.status}`);
+				}
+
+				const data = await response.json();
+				setBrands(data.results || data.brands || data || []);
+			} catch (error) {
+				setBrandsError(error instanceof Error ? error.message : "Failed to fetch brands");
+			} finally {
+				setBrandsLoading(false);
 			}
-
-			const data = await response.json();
-			setBrands(data.results || data.brands || data || []);
-		} catch (error) {
-			setBrandsError(error instanceof Error ? error.message : "Failed to fetch brands");
-		} finally {
-			setBrandsLoading(false);
 		}
-	}
+
+		fetchBrands()
+	}, []);
 
 		return (
 			<section className="bg-white pb-12 pt-4">
 			<div className="mx-auto max-w-6xl px-4">
 			<div className="mb-4 flex items-center justify-between gap-4">
 			<div className="flex items-baseline gap-2">
-			<h2 className="text-lg font-semibold text-[#394b63]">Brands</h2>
-			<span className="text-xs font-medium text-[#7c8fa8]">
-			(from API)
-			</span>
+				<h2 className="text-lg font-semibold text-[#394b63]">Brands</h2>
 			</div>
-			<button
-			onClick={fetchBrands}
-			disabled={brandsLoading}
-			className="h-9 rounded bg-[#0056a6] px-4 text-xs font-semibold uppercase tracking-wide text-white disabled:opacity-60"
-			>
-			{brandsLoading ? "Loading..." : "Fetch Brands"}
-			</button>
 			</div>
 
 			{brandsError && (

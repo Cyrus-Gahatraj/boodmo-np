@@ -13,6 +13,8 @@ export interface Category {
 export function CategorySearch() {
 	const [category, setCategory] = useState<Category[]>([]);
 	const [categoryError, setCategoryError] = useState("");
+	const [categoryLen, setCategoryLen] = useState(5);
+	const [categoryFull, setCategoryFull] = useState(false);
 
 	useEffect(() => {
 		const fetchCategory = async () => {
@@ -39,9 +41,14 @@ export function CategorySearch() {
 		fetchCategory();
 	}, []);
 
+	const toggleFull = ()=> {
+		setCategoryFull(!categoryFull);
+		if (categoryLen == category.length) setCategoryLen(5);
+		else setCategoryLen(category.length)
+	}
+
   return (
-	<div className="bg-white w-full">
-    <section className="bg-white pb-12 pt-6 max-w-4xl mx-auto">
+    <section className="bg-white gap-4 pb-12 pt-6">
       <div className="mx-auto max-w-6xl px-4">
         <div className="mb-6 flex items-baseline gap-2">
           <h2 className="text-lg font-semibold text-[#394b63]">Search by</h2>
@@ -55,8 +62,8 @@ export function CategorySearch() {
 
 		{category.length > 0 ? (
 
-			<div className="grid gap-4 md:grid-cols-3 lg:grid-cols-5">
-			{category.map((cat) => (
+			<div className="grid gap-4 md:grid-cols-0 lg:grid-cols-5">
+			{category.slice(0, categoryLen).map((cat) => (
 				<button
 				key={cat.id}
 				className="flex h-55 w-40 flex-col items-center justify-center gap-3 
@@ -85,13 +92,20 @@ export function CategorySearch() {
 			)}
 
         <div className="mt-6 flex justify-center">
-          <button className="rounded border border-[#c4d8f0] px-4 py-2 text-xs font-semibold text-[#394b63] hover:bg-[#f5f9ff]">
-            Load more
+          <button 
+		  className="rounded border border-[#c4d8f0] px-4 py-2 text-xs font-semibold text-[#394b63] hover:bg-[#f5f9ff]"
+		  onClick={toggleFull}
+		  >
+		  {!categoryFull ? (
+				  <p>Load more</p>
+			  ):(
+				  <p>Hide</p>
+			  )
+		  }
           </button>
         </div>
       </div>
     </section>
-	</div>
   );
 }
 
