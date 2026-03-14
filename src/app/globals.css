@@ -2,7 +2,21 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #1a1a1a;
+  /* Header & testimonial background */
+  --boodmo-header-bg: #e0f2f7;
+  /* Vibrant blue: buttons, headings, links, search button */
+  --boodmo-blue: #02457a;
+  --boodmo-blue-dark: #02457a;
+  --boodmo-blue-light: #59d8fd;
+  /* Main content text */
+  --boodmo-text: #374151;
+  /* Secondary / placeholder text */
+  --boodmo-text-muted: #6b7280;
+  /* Borders, dropdowns, card borders */
+  --boodmo-border: #d1d5db;
+  /* Content max width (match reference ~1200–1280px) */
+  --boodmo-content-width: 1280px;
 }
 
 @theme inline {
@@ -12,15 +26,25 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+/* Content container for consistent width */
+.boodmo-container {
+  width: 100%;
+  max-width: var(--boodmo-content-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .boodmo-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
 }

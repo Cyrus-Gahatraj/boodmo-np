@@ -1,20 +1,23 @@
 "use client";
 
 import { Header } from "@/components/home/Header";
-import { HeroSearch } from "@/components/home/HeroSearch";
 import { VehicleSearch } from "@/components/home/VehicleSearch";
 import { CategorySearch } from "@/components/home/CategorySearch";
-import { BrandList } from "@/components/home/BrandList";
+import { BrandsWeTrust } from "@/components/home/BrandsWeTrust";
+import { PopularCarMakers } from "@/components/home/PopularCarMakers";
+import { HomeFooter } from "@/components/home/HomeFooter";
+import { BoodmoNote } from "@/components/home/BoodmoNote";
 
 export default function Home() {
-
   return (
-    <div className="min-h-screen bg-[#f5f9ff]">
+    <div className="min-h-screen bg-white">
       <Header />
-      <HeroSearch />
       <VehicleSearch />
       <CategorySearch />
-      <BrandList/>
+      <BrandsWeTrust />
+      <PopularCarMakers />
+	  <BoodmoNote />
+      <HomeFooter />
     </div>
   );
 }

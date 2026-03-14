@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { IconHome } from "@/components/ui/Icons";
 
 interface BreadcrumbsProps {
   items: { label: string; href?: string }[];
@@ -6,17 +7,18 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
-    <nav className="border-b border-[#e2edf7] bg-white px-4 py-3">
-      <div className="mx-auto flex max-w-6xl items-center gap-2 text-xs text-[#7c8fa8]">
+    <nav className="border-b border-[var(--boodmo-border)] bg-white px-4 py-3">
+      <div className="boodmo-container flex items-center gap-2 text-xs text-[var(--boodmo-text-muted)]">
         {items.map((item, i) => (
           <span key={i} className="flex items-center gap-2">
-            {i > 0 && <span className="text-[#c4d8f0]">&#62;</span>}
+            {i > 0 && <span style={{ color: "var(--boodmo-border)" }}>&#62;</span>}
             {item.href ? (
-              <Link href={item.href} className="hover:text-[#0056a6]">
-                {item.label === "Home" ? "🏠" : item.label}
+              <Link href={item.href} className="hover:opacity-80" style={{ color: "var(--boodmo-blue)" }}>
+                {item.label === "Home" ? 
+					<IconHome/>: item.label}
               </Link>
             ) : (
-              <span className="font-medium text-[#394b63]">{item.label}</span>
+              <span className="font-medium" style={{ color: "var(--boodmo-text)" }}>{item.label}</span>
             )}
           </span>
         ))}

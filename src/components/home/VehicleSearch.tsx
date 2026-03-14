@@ -1,43 +1,66 @@
+"use client";
+
+import { IconSearch } from "@/components/ui/Icons";
+
+const SEARCH_CATEGORIES = [
+  "Select Car Maker",
+  "Select Model Line",
+  "Select Year",
+  "Select Modification",
+];
+
 export function VehicleSearch() {
+  const selectStyles = "h-10 flex-1 rounded border border-[#c4d8f0] bg-white px-3 text-xs text-[#394b63] focus:outline-none";
+
   return (
-    <section className="bg-white pb-10 pt-8">
-      <div className="mx-auto max-w-6xl px-4">
-        <div className="mb-3 flex flex-wrap items-baseline justify-between gap-3">
-          <div className="flex items-baseline gap-2">
-            <h2 className="text-lg font-semibold text-[#394b63]">Search by</h2>
-            <span className="text-lg font-semibold text-[#00a1e5]">Vehicle</span>
-          </div>
-          <div className="text-xs font-medium text-[#7c8fa8]">
-            Search by number plate:
+    <section className="bg-white py-10">
+      <div className="boodmo-container mx-auto max-w-6xl px-4">
+        
+        <div className="mb-4 flex flex-wrap items-end justify-between gap-4">
+          <h2 className="text-3xl font-semibold" style={{ color: "var(--boodmo-blue)" }}>
+            Search by <span style={{ color: "var(--boodmo-blue-light)" }}>Vehicle</span>
+          </h2>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="text-sm text-[var(--boodmo-text-muted)]">
+              Search by number plate
+            </span>
             <input
               type="text"
-              placeholder="DL1AA2345"
-              className="ml-2 inline-flex h-8 w-28 items-center rounded border border-[#c4d8f0] bg-[#f5f9ff] px-2 text-center text-xs tracking-[0.25em] text-[#394b63] focus:outline-none"
+              placeholder="DL1CBA7545"
+              className="h-9 w-36 rounded border border-[var(--boodmo-border)] bg-white px-3 text-sm text-[var(--boodmo-text)] placeholder:text-[var(--boodmo-text-muted)] focus:outline-none focus:ring-1 focus:ring-[var(--boodmo-blue)]"
             />
+            <button
+              type="button"
+              className="flex h-9 items-center gap-1.5 rounded px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+              style={{ background: "var(--boodmo-blue-light)" }}
+            >
+              <IconSearch size={16} />
+            </button>
           </div>
         </div>
 
-        <div className="overflow-hidden rounded border border-[#c4d8f0] bg-[#0056a6] shadow-sm">
+        <div 
+          className="overflow-hidden rounded border shadow-sm" 
+          style={{ background: "var(--boodmo-blue)" }}
+        >
           <div className="flex flex-col gap-3 px-4 py-4 md:flex-row">
-            <select className="h-10 flex-1 rounded border border-[#c4d8f0] bg-white px-3 text-xs text-[#394b63] focus:outline-none">
-              <option>Select Car Maker</option>
-            </select>
-            <select className="h-10 flex-1 rounded border border-[#c4d8f0] bg-white px-3 text-xs text-[#394b63] focus:outline-none">
-              <option>Select Model Line</option>
-            </select>
-            <select className="h-10 flex-1 rounded border border-[#c4d8f0] bg-white px-3 text-xs text-[#394b63] focus:outline-none">
-              <option>Select Year</option>
-            </select>
-            <select className="h-10 flex-1 rounded border border-[#c4d8f0] bg-white px-3 text-xs text-[#394b63] focus:outline-none">
-              <option>Select Modification</option>
-            </select>
-            <button className="h-10 rounded bg-[#ff8a00] px-4 text-xs font-semibold uppercase tracking-wide text-white">
+            {SEARCH_CATEGORIES.map((label) => (
+              <select key={label} className={selectStyles}>
+                <option>{label}</option>
+              </select>
+            ))}
+            
+            <button
+              className="h-10 rounded px-6 text-xs font-semibold uppercase tracking-wide text-white transition-opacity hover:opacity-90"
+              style={{ background: "var(--boodmo-blue-light)" }}
+            >
               Search Parts
             </button>
           </div>
         </div>
+
       </div>
     </section>
   );
 }
-

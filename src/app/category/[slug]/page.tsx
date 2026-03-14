@@ -113,7 +113,7 @@ export default function CategoryPage() {
           { label: currentCategory?.name ?? title },
         ]}
       />
-      <div className="mx-auto max-w-6xl px-4 py-6">
+      <div className="boodmo-container py-6">
         {error && (
           <div className="mb-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
             {error}
