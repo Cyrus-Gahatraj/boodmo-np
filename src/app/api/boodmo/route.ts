@@ -52,6 +52,22 @@ async function getPartCollection(query: string) {
   return boodmoFetch(`/api/v1/part-collection?${query}`);
 }
 
+async function getMakers() {
+  return boodmoFetch("/api/v1/vehicle-tree/maker");
+}
+
+async function getLines(query: string){
+  return boodmoFetch(`/api/v1/vehicle-tree/line?makerId=${query}`);
+}
+
+async function getModels(makerId: string, lineId: string){
+	return boodmoFetch(`/api/v1/vehicle-tree/model?makerId=${makerId}&lineId=${lineId}`);
+}
+
+async function getConfigurations(makerId: string, lineId: string, modelId: string){
+	return boodmoFetch(`/api/v1/vehicle-tree/configuration?makerId=${makerId}&lineId=${lineId}&modelId=${modelId}`);
+}
+
 /* ---------- MAIN HANDLER ---------- */
 
 export async function GET(req: Request) {
@@ -60,6 +76,9 @@ export async function GET(req: Request) {
   const action = searchParams.get("action");
   const partId = searchParams.get("partId");
   const query = searchParams.get("query");
+  const makerId = searchParams.get("makerId");
+  const lineId = searchParams.get("lineId");
+  const modelId = searchParams.get("modelId");
 
   try {
     let data;
@@ -96,6 +115,25 @@ export async function GET(req: Request) {
       case "collection":
         if (!query) throw new Error("Missing filter query");
         data = await getPartCollection(query);
+		break;
+
+      case "makers":
+        data = await getMakers();
+        break;
+		
+      case "lines": 
+        if (!makerId) throw new Error("Missing makerId");
+         data = await getLines(makerId);
+        break;
+      
+      case "models": 
+        if (!makerId || !lineId) throw new Error("Missing lineId");
+        data = await getModels(makerId, lineId);
+        break;
+
+      case "configs": 
+        if (!makerId || !lineId || !modelId) throw new Error("Missing modelId");
+        data = await getConfigurations(makerId, lineId, modelId);
         break;
 
       default:

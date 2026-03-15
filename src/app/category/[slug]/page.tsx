@@ -1,6 +1,6 @@
 "use client";
 
-import { useParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 import { useMemo, useState, useEffect } from "react";
 import { Header } from "@/components/home/Header";
 import { Breadcrumbs } from "@/components/category/Breadcrumbs";
@@ -44,8 +44,14 @@ function findCategoryBySlug(
 
 export default function CategoryPage() {
   const params = useParams();
+  const searchParams = useSearchParams();
   const slug = typeof params.slug === "string" ? params.slug : "";
   const title = slug ? slugToTitle(slug) : "Category";
+  const vehicleMakerId = searchParams.get("makerId");
+  const vehicleLineId = searchParams.get("lineId");
+  const vehicleModelId = searchParams.get("modelId");
+  const vehicleConfigId = searchParams.get("configId");
+  const hasVehicleFilter = Boolean(vehicleMakerId && vehicleLineId && vehicleModelId);
 
   const [categories, setCategories] = useState<SidebarCategory[]>([]);
   const [loading, setLoading] = useState(true);
@@ -114,6 +120,12 @@ export default function CategoryPage() {
         ]}
       />
       <div className="boodmo-container py-6">
+        {hasVehicleFilter && (
+          <p className="mb-4 rounded-lg border border-[var(--boodmo-border)] bg-[var(--boodmo-header-bg)] px-4 py-2 text-sm text-[var(--boodmo-text)]">
+            Showing parts for your selected vehicle. (Vehicle IDs: maker {vehicleMakerId}, line {vehicleLineId}, model {vehicleModelId}
+            {vehicleConfigId ? `, config ${vehicleConfigId}` : ""})
+          </p>
+        )}
         {error && (
           <div className="mb-4 rounded border border-red-200 bg-red-50 p-3 text-sm text-red-700">
             {error}
