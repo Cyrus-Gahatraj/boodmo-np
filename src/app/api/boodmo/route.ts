@@ -3,7 +3,9 @@ const API_LOGIN = process.env.BOODMO_API_LOGIN;
 const API_PASSWORD = process.env.BOODMO_API_PASSWORD;
 
 async function boodmoFetch(path: string) {
-  const res = await fetch(`${API_BASE_URL}${path}`, {
+  const url = `${API_BASE_URL}${path}`;
+  
+  const res = await fetch(url, {
     headers: {
       Accept: "application/json",
       Authorization: `Basic ${Buffer.from(`${API_LOGIN}:${API_PASSWORD}`).toString("base64")}`,
@@ -12,6 +14,8 @@ async function boodmoFetch(path: string) {
   });
 
   if (!res.ok) {
+    const errorText = await res.text();
+    console.error(`Boodmo API Error (${res.status}):`, errorText);
     throw new Error(`Boodmo API error: ${res.status}`);
   }
 
@@ -66,6 +70,10 @@ async function getModels(makerId: string, lineId: string){
 
 async function getConfigurations(makerId: string, lineId: string, modelId: string){
 	return boodmoFetch(`/api/v1/vehicle-tree/configuration?makerId=${makerId}&lineId=${lineId}&modelId=${modelId}`);
+}
+
+async function getSmartSearch(params: URLSearchParams) {
+  return boodmoFetch(`/api/v1/smartsearch?${params.toString()}`);
 }
 
 /* ---------- MAIN HANDLER ---------- */
@@ -135,6 +143,17 @@ export async function GET(req: Request) {
         if (!makerId || !lineId || !modelId) throw new Error("Missing modelId");
         data = await getConfigurations(makerId, lineId, modelId);
         break;
+
+	  case "smartsearch":
+		const params = new URLSearchParams(new URL(req.url).search);
+		params.delete("action");
+		if (!params.has("languageCode")) {
+			params.set("languageCode", "en");
+		}
+
+		const queryString = params.toString();
+		data = await boodmoFetch(`/api/v1/smartsearch/?${queryString}`);
+		break;
 
       default:
         return Response.json(
