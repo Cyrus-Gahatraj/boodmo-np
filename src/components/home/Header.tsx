@@ -53,51 +53,42 @@ export function Header() {
             </div>
           </Link>
           <nav className="flex items-center gap-4 md:gap-6">
-            <button className="text-white hover:opacity-90"><IconHeart size={22}/></button>
-            <button className="relative text-white hover:opacity-90">
+            <button className="text-[var(--boodmo-blue)] hover:opacity-80"><IconHeart size={22}/></button>
+            <button className="relative text-[var(--boodmo-blue)] hover:opacity-80">
               <IconCart size={22} />
-              <span className="absolute -right-1.5 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-white px-1 text-[10px] font-bold text-[var(--boodmo-blue)]">0</span>
+              <span className="absolute -right-1.5 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[var(--boodmo-blue)] px-1 text-[10px] font-bold text-white">0</span>
             </button>
-            <button className="text-white hover:opacity-90"><IconUser size={22} /></button>
-            <button className="text-white hover:opacity-90 md:hidden"><IconMenu size={22} /></button>
+            <button className="text-[var(--boodmo-blue)] hover:opacity-80"><IconUser size={22} /></button>
+            <button className="text-[var(--boodmo-blue)] hover:opacity-80 md:hidden"><IconMenu size={22} /></button>
           </nav>
         </div>
 
         {/* Search row */}
-        <div className="mt-6 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+        <div className="mt-18 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
           <div className="flex-1 max-w-2xl relative">
-		  <form
-			  onSubmit={(e) => {
-				e.preventDefault();
-				if (!term.trim()) return;
-
-				setIsModalOpen(true); // or navigate to search page
-			  }}
-			>
-            <div className="flex overflow-hidden rounded-lg border border-[var(--boodmo-border)] bg-white shadow-sm focus-within:ring-2 focus-within:ring-[var(--boodmo-blue)]">
-              <input
-                type="text"
-                value={term}
-                onChange={(e) => setTerm(e.target.value)}
-                placeholder="All Auto Parts (e.g. 'brake pads for swift')"
-                className="w-full border-0 px-4 py-3 text-[var(--boodmo-text)] focus:outline-none"
-              />
-              <button 
-				  type="submit"
-				  className="flex h-12 w-14 items-center justify-center text-white" 
-				  style={{ background: "var(--boodmo-blue)" }}
-			  >
-                <IconSearch size={22} />
-              </button>
-            </div>
-			</form>
-
-            {/* Smart Search Results Dropdown (If you want it here too) */}
-            {isOpen && results && (
-              <div className="absolute top-full left-0 right-0 z-50 bg-white border rounded shadow-xl mt-1">
-                 {/* Logic to show smart search results as discussed before */}
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (!term.trim()) return;
+                setIsModalOpen(true);
+              }}
+            >
+              <div className="flex overflow-hidden rounded-lg border border-[var(--boodmo-border)] bg-white shadow-sm focus-within:ring-2 focus-within:ring-[var(--boodmo-blue)]">
+                <input
+                  type="text"
+                  value={term}
+                  onChange={(e) => setTerm(e.target.value)}
+                  placeholder='Search: "Maruti Oil Filter"'
+                  className="w-full border-0 px-4 py-3 text-[var(--boodmo-text)] focus:outline-none"
+                />
+                <button 
+                  type="submit"
+                  className="flex h-12 w-14 items-center justify-center text-white bg-[var(--boodmo-blue)]"
+                >
+                  <IconSearch size={22} />
+                </button>
               </div>
-            )}
+            </form>
 
             <button
               type="button"

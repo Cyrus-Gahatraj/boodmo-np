@@ -83,6 +83,7 @@ export async function GET(req: Request) {
 
   const action = searchParams.get("action");
   const partId = searchParams.get("partId");
+  const categoryId = searchParams.get("categoryId");
   const query = searchParams.get("query");
   const makerId = searchParams.get("makerId");
   const lineId = searchParams.get("lineId");
@@ -120,10 +121,30 @@ export async function GET(req: Request) {
         data = await getPartReplacements(partId);
         break;
 
-      case "collection":
-        if (!query) throw new Error("Missing filter query");
-        data = await getPartCollection(query);
-		break;
+      case "collection": {
+        const params = new URLSearchParams();
+        
+        // Add category filter if present
+        if (categoryId) {
+          params.set("filter[categoryId]", categoryId);
+        }
+
+        // Add any additional query parameters passed from the frontend
+        if (query) {
+          const extraParams = new URLSearchParams(query);
+          extraParams.forEach((value, key) => {
+            params.set(key, value);
+          });
+        }
+
+        // Ensure at least one filter is present as per API requirements
+        if (params.toString() === "") {
+          throw new Error("API requires at least one filter (e.g., categoryId)");
+        }
+
+        data = await getPartCollection(params.toString());
+        break;
+      }
 
       case "makers":
         data = await getMakers();
@@ -144,7 +165,7 @@ export async function GET(req: Request) {
         data = await getConfigurations(makerId, lineId, modelId);
         break;
 
-	  case "smartsearch":
+	  case "smartsearch": {
 		const params = new URLSearchParams(new URL(req.url).search);
 		params.delete("action");
 		if (!params.has("languageCode")) {
@@ -154,6 +175,7 @@ export async function GET(req: Request) {
 		const queryString = params.toString();
 		data = await boodmoFetch(`/api/v1/smartsearch/?${queryString}`);
 		break;
+      }
 
       default:
         return Response.json(

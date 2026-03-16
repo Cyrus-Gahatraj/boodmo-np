@@ -49,10 +49,13 @@ export function CategorySidebar({
             {categories.map((cat) => {
               const slug = slugify(cat.name);
               const isActive = slug === currentSlug;
+              const hasChildren = cat.childs && cat.childs.length > 0;
+              const href = hasChildren ? `/category/${slug}` : `/catalog/${slug}`;
+
               return (
                 <li key={cat.id}>
                   <Link
-                    href={`/category/${slug}`}
+                    href={href}
                     className={`block rounded px-3 py-2 text-xs ${
                       isActive
                         ? "bg-[#e2edf7] font-semibold text-[#0056a6]"
@@ -61,23 +64,32 @@ export function CategorySidebar({
                   >
                     {cat.name}
                   </Link>
-                  {isActive && cat.childs && cat.childs.length > 0 && (
+                  {isActive && hasChildren && (
                     <ul className="ml-3 mt-1 space-y-0.5 border-l border-[#e2edf7] pl-3">
-                      {cat.childs.map((child) => (
-                        <li key={child.id}>
-                          <Link
-                            href={`/category/${slugify(child.name)}`}
-                            className="block py-1.5 text-xs text-[#7c8fa8] hover:text-[#0056a6]"
-                          >
-                            {child.name}
-                          </Link>
-                        </li>
-                      ))}
+                      {cat.childs!.map((child) => {
+                        const childSlug = slugify(child.name);
+                        const childHasChildren = child.childs && child.childs.length > 0;
+                        const childHref = childHasChildren 
+                          ? `/category/${childSlug}` 
+                          : `/catalog/${childSlug}`;
+
+                        return (
+                          <li key={child.id}>
+                            <Link
+                              href={childHref}
+                              className="block py-1.5 text-xs text-[#7c8fa8] hover:text-[#00a1e5]"
+                            >
+                              {child.name}
+                            </Link>
+                          </li>
+                        );
+                      })}
                     </ul>
                   )}
                 </li>
               );
             })}
+
           </ul>
         </div>
       </div>
