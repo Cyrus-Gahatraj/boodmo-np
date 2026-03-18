@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 const makers = [
   "MARUTI",
   "HYUNDAI",
@@ -13,12 +15,23 @@ export function PopularCarMakers() {
   return (
     <section className="bg-white py-10">
       <div className="boodmo-container">
-        <h2
-          className="mb-6 text-3xl font-semibold"
-          style={{ color: "var(--boodmo-blue)" }}
-        >
-           Popular <span style={{ color: "var(--boodmo-blue-light)" }}>Car Makers</span>
-        </h2>
+        <div className="mb-6 flex items-center justify-between">
+          <h2
+            className="text-3xl font-semibold"
+            style={{ color: "var(--boodmo-blue)" }}
+          >
+            Popular <span style={{ color: "var(--boodmo-blue-light)" }}>Car Makers</span>
+          </h2>
+          
+          <Link
+            href="/vehicles"
+            className="text-sm font-medium transition hover:underline"
+            style={{ color: "var(--boodmo-blue-light)" }}
+          >
+            View All
+          </Link>
+        </div>
+        
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-8">
           {makers.map((name) => (
             <button
