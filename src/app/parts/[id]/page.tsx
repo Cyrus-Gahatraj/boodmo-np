@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import { Header } from "@/components/home/Header";
@@ -21,6 +22,7 @@ export default function PartPage() {
   const [compat, setCompat] = useState<any[]>([]);
   const [replacements, setReplacements] = useState<any[]>([]);
   const [categories, setCategories] = useState<SidebarCategory[]>([]);
+  const [makers, setMakers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -33,11 +35,25 @@ export default function PartPage() {
 
     const fetchData = async () => {
       try {
-        // Fetch categories for sidebar
-        const catRes = await fetch(`${API_BASE}?action=categories`);
+        // Fetch categories and makers for sidebar
+        const [catRes, makerRes] = await Promise.all([
+          fetch(`${API_BASE}?action=categories`),
+          fetch(`${API_BASE}?action=makers`),
+        ]);
+
         if (catRes.ok) {
           const catData = await catRes.json();
-          if (!cancelled) setCategories(catData.data || catData.results || catData || []);
+          if (!cancelled) {
+            const raw = catData.data || catData.results || catData || [];
+            setCategories(Array.isArray(raw) ? raw : []);
+          }
+        }
+        
+        if (makerRes.ok) {
+          const makerData = await makerRes.json();
+          if (!cancelled) {
+            setMakers(makerData.data || makerData.items || makerData || []);
+          }
         }
 
         // Fetch part details
@@ -97,7 +113,7 @@ export default function PartPage() {
         <Header />
         <div className="mx-auto max-w-6xl px-4 py-12 text-center">
           <p className="text-red-600">{error || "Product not found"}</p>
-          <a href="/" className="mt-4 inline-block text-[#00a1e5] hover:underline">Go back home</a>
+          <Link href="/" className="mt-4 inline-block text-[#00a1e5] hover:underline">Go back home</Link>
         </div>
       </div>
     );
@@ -117,6 +133,7 @@ export default function PartPage() {
         <div className="flex flex-col gap-8 lg:flex-row">
           <CategorySidebar
             categories={categories}
+            makers={makers}
             currentSlug=""
             currentName={part.name}
           />

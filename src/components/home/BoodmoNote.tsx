@@ -28,7 +28,7 @@ export function BoodmoNote() {
               How do we work: key features of boodmo.com
             </h3>
             <p>
-              Clear and transparent offers. We do not promote any particular suppliers, all parts are sorted by producers' information and filtered by customers' choice. Quick and competent service. If any problems occur, boodmo.com will put its best foot forward to solve issues...
+              Clear and transparent offers. We do not promote any particular suppliers, all parts are sorted by producers&apos; information and filtered by customers&apos; choice. Quick and competent service. If any problems occur, boodmo.com will put its best foot forward to solve issues...
             </p>
           </div>
 

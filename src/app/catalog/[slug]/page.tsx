@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useParams, useSearchParams } from "next/navigation";
 import { useState, useEffect, useMemo } from "react";
 import { Header } from "@/components/home/Header";
@@ -46,6 +47,7 @@ export default function CatalogPage() {
   const title = slug ? slugToTitle(slug) : "Catalog";
 
   const [categories, setCategories] = useState<SidebarCategory[]>([]);
+  const [makers, setMakers] = useState<any[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [totalCount, setTotalCount] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -58,12 +60,24 @@ export default function CatalogPage() {
 
     const fetchData = async () => {
       try {
-        // 1. Fetch categories
-        const catRes = await fetch(`${API_BASE}?action=categories`);
+        // 1. Fetch categories and makers
+        const [catRes, makerRes] = await Promise.all([
+          fetch(`${API_BASE}?action=categories`),
+          fetch(`${API_BASE}?action=makers`),
+        ]);
+
         if (!catRes.ok) throw new Error(`Failed to load categories: ${catRes.status}`);
-        const catData = await catRes.json();
+        
+        const [catData, makerData] = await Promise.all([
+          catRes.json(),
+          makerRes.json(),
+        ]);
+
         const cats = normalizeCategories(catData);
-        if (!cancelled) setCategories(cats);
+        if (!cancelled) {
+          setCategories(cats);
+          setMakers(makerData.data || makerData.items || makerData || []);
+        }
 
         const current = findCategoryBySlug(cats, slug);
         if (!current) {
@@ -150,6 +164,7 @@ export default function CatalogPage() {
         <div className="flex flex-col gap-8 lg:flex-row">
           <CategorySidebar
             categories={categories}
+            makers={makers}
             currentSlug={slug}
             currentName={currentCategoryName}
           />
@@ -200,10 +215,10 @@ export default function CatalogPage() {
 
             {products.length === 0 && !error && (
               <div className="rounded-lg border border-[#e2edf7] bg-white p-12 text-center shadow-sm">
-                <p className="text-[#7c8fa8]">No parts found in the "{currentCategoryName}" market.</p>
-                <a href="/" className="mt-4 inline-block text-sm text-[#00a1e5] hover:underline">
+                <p className="text-[#7c8fa8]">No parts found in the &quot;{currentCategoryName}&quot; market.</p>
+                <Link href="/" className="mt-4 inline-block text-sm text-[#00a1e5] hover:underline">
                   Browse other categories
-                </a>
+                </Link>
               </div>
             )}
           </main>
