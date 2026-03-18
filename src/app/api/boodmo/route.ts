@@ -83,7 +83,7 @@ export async function GET(req: Request) {
 
   const action = searchParams.get("action");
   const partId = searchParams.get("partId");
-  const categoryId = searchParams.get("categoryId");
+  const categoryId = searchParams.get("categoryId") || searchParams.get("filter[categoryId]");
   const query = searchParams.get("query");
   const makerId = searchParams.get("makerId");
   const lineId = searchParams.get("lineId");
@@ -128,6 +128,13 @@ export async function GET(req: Request) {
         if (categoryId) {
           params.set("filter[categoryId]", categoryId);
         }
+
+        // Pass through ALL filter and page parameters from the request
+        searchParams.forEach((value, key) => {
+          if (key.startsWith("filter[") || key.startsWith("page[")) {
+            params.append(key, value);
+          }
+        });
 
         // Add any additional query parameters passed from the frontend
         if (query) {

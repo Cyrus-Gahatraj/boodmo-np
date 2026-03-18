@@ -8,6 +8,8 @@ import { Breadcrumbs } from "@/components/category/Breadcrumbs";
 import {
   CategorySidebar,
   type SidebarCategory,
+  type FilterState,
+  type Brand,
 } from "@/components/category/CategorySidebar";
 import {
   CategoryGrid,
@@ -56,12 +58,21 @@ export default function CategoryPage() {
   const hasVehicleFilter = Boolean(vehicleMakerId && vehicleLineId && vehicleModelId);
 
   const [categories, setCategories] = useState<SidebarCategory[]>([]);
-  const [brands, setBrands] = useState<any[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [makers, setMakers] = useState<any[]>([]);
   const [topParts, setTopParts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [partsLoading, setPartsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [filters, setFilters] = useState<FilterState>({
+    brandIds: [],
+    minPrice: "",
+    maxPrice: "",
+  });
+
+  const handleFilterChange = (newFilters: FilterState) => {
+    setFilters(newFilters);
+  };
 
   useEffect(() => {
     let cancelled = false;
@@ -117,8 +128,21 @@ export default function CategoryPage() {
 
     let cancelled = false;
     setPartsLoading(true);
+
+    const params = new URLSearchParams();
+    params.set("filter[categoryId]", currentCategory.id.toString());
     
-    fetch(`${API_BASE}?action=collection&categoryId=${currentCategory.id}`)
+    if (filters.brandIds.length > 0) {
+      params.set("filter[brandIds]", filters.brandIds.join(","));
+    }
+    if (filters.minPrice) {
+      params.set("filter[mrp][from]", filters.minPrice);
+    }
+    if (filters.maxPrice) {
+      params.set("filter[mrp][to]", filters.maxPrice);
+    }
+    
+    fetch(`${API_BASE}?action=collection&${params.toString()}`)
       .then((res) => res.json())
       .then((data) => {
         if (cancelled) return;
@@ -147,7 +171,7 @@ export default function CategoryPage() {
     return () => {
       cancelled = true;
     };
-  }, [currentCategory]);
+  }, [currentCategory, filters]);
 
   if (loading) {
     return (
@@ -185,8 +209,11 @@ export default function CategoryPage() {
           <CategorySidebar
             categories={categories}
             makers={makers}
+            brands={brands}
             currentSlug={slug}
             currentName={currentCategory?.name ?? title}
+            filters={filters}
+            onFilterChange={handleFilterChange}
           />
           <main className="min-w-0 flex-1 space-y-10">
             {currentCategory ? (
@@ -195,6 +222,51 @@ export default function CategoryPage() {
                   title={currentCategory.name}
                   items={gridItems}
                 />
+
+                {/* Active Filters Display */}
+                {(filters.brandIds.length > 0 || filters.minPrice || filters.maxPrice) && (
+                  <div className="rounded-lg border border-[#e2edf7] bg-white p-4">
+                    <div className="mb-3 flex items-center justify-between">
+                      <h3 className="text-sm font-semibold text-[#394b63]">Active Filters</h3>
+                      <button
+                        onClick={() => setFilters({ brandIds: [], minPrice: "", maxPrice: "" })}
+                        className="text-xs font-semibold text-[#00a1e5] hover:text-[#0088cc]"
+                      >
+                        RESET ALL
+                      </button>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {filters.brandIds.map((brandId) => {
+                        const brand = brands.find(b => b.id === brandId);
+                        return brand ? (
+                          <span
+                            key={brandId}
+                            className="flex items-center gap-1 rounded-full bg-[#e2edf7] px-3 py-1 text-xs font-medium text-[#394b63]"
+                          >
+                            {brand.name}
+                            <button
+                              onClick={() => handleFilterChange({ ...filters, brandIds: filters.brandIds.filter(id => id !== brandId) })}
+                              className="ml-1 text-[#7c8fa8] hover:text-[#394b63]"
+                            >
+                              ×
+                            </button>
+                          </span>
+                        ) : null;
+                      })}
+                      {(filters.minPrice || filters.maxPrice) && (
+                        <span className="flex items-center gap-1 rounded-full bg-[#e2edf7] px-3 py-1 text-xs font-medium text-[#394b63]">
+                          ₹{filters.minPrice || "0"} - ₹{filters.maxPrice || "∞"}
+                          <button
+                            onClick={() => handleFilterChange({ ...filters, minPrice: "", maxPrice: "" })}
+                            className="ml-1 text-[#7c8fa8] hover:text-[#394b63]"
+                          >
+                            ×
+                          </button>
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                )}
 
                 {/* Top Parts Section */}
                 {topParts.length > 0 && (

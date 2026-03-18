@@ -8,6 +8,8 @@ import { Breadcrumbs } from "@/components/category/Breadcrumbs";
 import {
   CategorySidebar,
   type SidebarCategory,
+  type FilterState,
+  type Brand,
 } from "@/components/category/CategorySidebar";
 import { PartDetail } from "@/components/category/PartDetail";
 
@@ -22,9 +24,19 @@ export default function PartPage() {
   const [compat, setCompat] = useState<any[]>([]);
   const [replacements, setReplacements] = useState<any[]>([]);
   const [categories, setCategories] = useState<SidebarCategory[]>([]);
+  const [brands, setBrands] = useState<Brand[]>([]);
   const [makers, setMakers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [filters, setFilters] = useState<FilterState>({
+    brandIds: [],
+    minPrice: "",
+    maxPrice: "",
+  });
+
+  const handleFilterChange = (newFilters: FilterState) => {
+    setFilters(newFilters);
+  };
 
   useEffect(() => {
     if (!id) return;
@@ -35,10 +47,11 @@ export default function PartPage() {
 
     const fetchData = async () => {
       try {
-        // Fetch categories and makers for sidebar
-        const [catRes, makerRes] = await Promise.all([
+        // Fetch categories, makers and brands for sidebar
+        const [catRes, makerRes, brandRes] = await Promise.all([
           fetch(`${API_BASE}?action=categories`),
           fetch(`${API_BASE}?action=makers`),
+          fetch(`${API_BASE}?action=brands`),
         ]);
 
         if (catRes.ok) {
@@ -53,6 +66,13 @@ export default function PartPage() {
           const makerData = await makerRes.json();
           if (!cancelled) {
             setMakers(makerData.data || makerData.items || makerData || []);
+          }
+        }
+
+        if (brandRes.ok) {
+          const brandData = await brandRes.json();
+          if (!cancelled) {
+            setBrands(brandData.results || brandData.brands || brandData || []);
           }
         }
 
@@ -134,8 +154,11 @@ export default function PartPage() {
           <CategorySidebar
             categories={categories}
             makers={makers}
+            brands={brands}
             currentSlug=""
             currentName={part.name}
+            filters={filters}
+            onFilterChange={handleFilterChange}
           />
           <main className="min-w-0 flex-1">
             <PartDetail 
